@@ -29,13 +29,10 @@ app.get('/list', async (req, res) => {
 
 app.get('/time', (req, res) => {
     let serverTime = new Date();
-    // console.log(serverTime)
+    console.log(serverTime)
     res.render('time.ejs', { data : serverTime })
 })
 
-app.get('/time2', (요청, 응답) => {
-    응답.render('time.ejs', { data : new Date() })
-  })
 
 
 
