@@ -9,7 +9,7 @@ app.use(express.urlencoded({extended:true}))
 
 
 // 몽고DB연결 세팅
-const { MongoClient } = require('mongodb')
+const { MongoClient, ObjectId } = require('mongodb')
 let db
 const url = 'mongodb+srv://admin:qwer1234@cluster0.lyh4mwk.mongodb.net/?retryWrites=true&w=majority'
 new MongoClient(url).connect().then((client)=>{ // 몽고DB에 접속해줌
@@ -43,7 +43,6 @@ app.get('/write', (req, res) => {
 
 
 app.post('/writing', async (req, res) => {
-
     try {
         if (req.body.title == '') {
             res.send("입력란에 입력해주세요");
@@ -58,9 +57,27 @@ app.post('/writing', async (req, res) => {
         console.log(e)
         res.status(500).send('서버에러')
     }
-    
-    
 })
+
+
+app.get('/detail/:id', async (req, res) => {
+    
+
+    try {
+        let result = await db.collection('post').findOne({ _id: new ObjectId(req.params.id) });
+        console.log("URL파라미터값은 = " + req.params.id);
+        console.log(result)
+        res.render('detail.ejs', { detail : result } );
+    } catch(e) {
+        console.log(e)
+        res.status(404).send('url 잘못입력햇스요')
+    }
+})
+
+// app.get('/detail/:id', async (req, res) => {
+//     console.log(req.params)
+//     res.render('detail.ejs');
+// })
 
 
 
