@@ -61,8 +61,6 @@ app.post('/writing', async (req, res) => {
 
 
 app.get('/detail/:id', async (req, res) => {
-    
-
     try {
         let result = await db.collection('post').findOne({ _id: new ObjectId(req.params.id) });
         console.log("URL파라미터값은 = " + req.params.id);
@@ -74,10 +72,34 @@ app.get('/detail/:id', async (req, res) => {
     }
 })
 
+
+app.get('/edit/:id', async(req, res) => {
+    // let result = await db.collection('post').find().toArray()
+    db.collection('post').updateOne(
+        { _id : new ObjectId('661c843796c14ae8c2b7aa1e') },
+        {$set : { title : 'hello' } }
+    )
+    
+    let result = await db.collection('post').findOne({ _id : new ObjectId(req.params.id)})
+    console.log(result);
+    res.render('edit.ejs', { editContent : result });
+})
+
+app.post('/edit', async (req, res) => {
+    await db.collection('post').updateOne({ _id : new ObjectId(req.body.id) }, 
+        {$set : { title : req.body.title, content : req.body.content }}
+    )
+    console.log(req.body)
+    return res.redirect('/list')
+})
+
 // app.get('/detail/:id', async (req, res) => {
 //     console.log(req.params)
 //     res.render('detail.ejs');
 // })
+
+
+
 
 
 
