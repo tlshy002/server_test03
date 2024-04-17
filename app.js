@@ -1,16 +1,21 @@
 // 서버의 개념? 은 간단함 => 요청하는걸 갖다주는 프로그램
 const express = require('express');
 const app = express();
+// 몽고DB연결 세팅
+const { MongoClient, ObjectId } = require('mongodb')
+const methodOverride = require('method-override')
 
+app.use(methodOverride('_method'))
 app.use(express.static(__dirname + '/public'))
 app.set('view engine', 'ejs')
 app.use(express.json())
 app.use(express.urlencoded({extended:true}))
 
 
-// 몽고DB연결 세팅
-const { MongoClient, ObjectId } = require('mongodb')
-let db
+
+
+
+let db;
 const url = 'mongodb+srv://admin:qwer1234@cluster0.lyh4mwk.mongodb.net/?retryWrites=true&w=majority'
 new MongoClient(url).connect().then((client)=>{ // 몽고DB에 접속해줌
   console.log('DB연결성공')
@@ -24,7 +29,7 @@ new MongoClient(url).connect().then((client)=>{ // 몽고DB에 접속해줌
 
 app.get('/list', async (req, res) => {
     let result = await db.collection('post').find().toArray()
-    console.log(result[0].title)
+    console.log("list페이지입니다 : ", result[0].title)
     // res.send(result[0].title);
 
     res.render('list.ejs', { 글목록 : result });
@@ -74,23 +79,42 @@ app.get('/detail/:id', async (req, res) => {
 
 
 app.get('/edit/:id', async(req, res) => {
-    // let result = await db.collection('post').find().toArray()
-    db.collection('post').updateOne(
-        { _id : new ObjectId('661c843796c14ae8c2b7aa1e') },
-        {$set : { title : 'hello' } }
-    )
-    
-    let result = await db.collection('post').findOne({ _id : new ObjectId(req.params.id)})
-    console.log(result);
-    res.render('edit.ejs', { editContent : result });
+    try {
+        db.collection('post').updateOne(
+            { _id : new ObjectId('661c843796c14ae8c2b7aa1e') },
+            {$set : { title : 'hello' } }
+        )
+        let result = await db.collection('post').findOne({ _id : new ObjectId(req.params.id)})
+        console.log('say hi!!!')
+        console.log(result);
+        res.render('edit.ejs', { editContent : result });
+    } catch(e) {
+        // console.log(e);
+        res.status(404).send('url잘못입력함')
+    }   
 })
 
-app.post('/edit', async (req, res) => {
-    await db.collection('post').updateOne({ _id : new ObjectId(req.body.id) }, 
-        {$set : { title : req.body.title, content : req.body.content }}
+app.put('/edit', async (req, res) => {
+    await db.collection('post').updateOne({_id : 1}, 
+        {$inc : { like : -2 } }
     )
-    console.log(req.body)
-    return res.redirect('/list')
+
+
+
+    try {
+        if(req.body.title == 0 || req.body.content == 0) {
+            res.send("빈칸 안돼요")
+        } else {
+            await db.collection('post').updateOne({ _id : new ObjectId(req.body.id) }, 
+                {$set : { title : req.body.title, content : req.body.content }}
+            )
+            console.log(req.body.title)
+            console.log(req.body.content)
+            return res.redirect('/list')
+        }
+    } catch(e) {
+        console("뭔가잘못됨")
+    }
 })
 
 // app.get('/detail/:id', async (req, res) => {

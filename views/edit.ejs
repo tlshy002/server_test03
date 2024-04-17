@@ -13,7 +13,7 @@
     <%- include('bootstrap.ejs') %> 
 
     <%= JSON.stringify(editContent) %>">
-    <form class="form-box" action="/edit" method="post">
+    <form class="form-box" action="/edit?_method=PUT" method="post">
         <h4>수정하기</h4>
         <input name="id" placeholder="id값 입력하셈" value="<%= editContent._id %>">
         <input name="title" value="<%= editContent.title %>">

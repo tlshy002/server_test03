@@ -23,12 +23,19 @@ html파일인데 살짝 ejs문법 써서 서버데이터를 넣을수있음 -->
                 <h4><a href="/detail/<%= 글목록[i]._id %>">
                     <%= 글목록[i].title %></a>
                     <a href="/edit/<%= 글목록[i]._id %>">✏️</a>
+                    <span class="delete">🗑️</span>
                 </h4>
                 <p>글내용임</p>
             </div>
         <% } %>
     </div> 
 
+    <script>
+        document.querySelectorAll('.delete')[0]
+        .addEventListener('click', function() {
+
+        })
+    </script>
 
 </body>
 </html>
