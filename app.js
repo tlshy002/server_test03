@@ -4,13 +4,15 @@ const app = express();
 // 몽고DB연결 세팅
 const { MongoClient, ObjectId } = require('mongodb')
 const methodOverride = require('method-override')
+const cors = require("cors");
+
 
 app.use(methodOverride('_method'))
 app.use(express.static(__dirname + '/public'))
 app.set('view engine', 'ejs')
 app.use(express.json())
 app.use(express.urlencoded({extended:true}))
-
+app.use(cors());
 
 
 
@@ -122,6 +124,21 @@ app.put('/edit', async (req, res) => {
 //     res.render('detail.ejs');
 // })
 
+app.post('/abc', async(req, res) => {
+    console.log('안녕')
+    console.log(req.body)
+})
+
+// app.get('/abc/:id', (req, res) => {
+//     console.log(req.params)
+// })
+
+app.delete('/delete', async(req, res) => {
+    console.log(req.query)
+    console.log("삭제됨")
+    await db.collection('post').deleteOne({ _id : new ObjectId(req.query.docid)})
+    res.send('삭제완료')
+})
 
 
 

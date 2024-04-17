@@ -24,6 +24,11 @@ html파일인데 살짝 ejs문법 써서 서버데이터를 넣을수있음 -->
                     <%= 글목록[i].title %></a>
                     <a href="/edit/<%= 글목록[i]._id %>">✏️</a>
                     <span class="delete">🗑️</span>
+
+                    <!-- <form action="/delete" method="post">
+                        <span><button type="submit">삭제</button></span>
+                    </form> -->
+                    
                 </h4>
                 <p>글내용임</p>
             </div>
@@ -31,9 +36,14 @@ html파일인데 살짝 ejs문법 써서 서버데이터를 넣을수있음 -->
     </div> 
 
     <script>
-        document.querySelectorAll('.delete')[0]
-        .addEventListener('click', function() {
-
+        
+        document.querySelectorAll('.delete')[0].addEventListener('click', function() {
+            fetch('/delete?docid=<%= 글목록[0]._id %>', {
+                method : 'DELETE'
+            })
+        })
+        document.querySelectorAll('.delete')[0].addEventListener('click', function() {
+            fetch('/abc?age=23')
         })
     </script>
 
